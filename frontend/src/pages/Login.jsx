@@ -8,6 +8,7 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -37,6 +38,8 @@ const Login = () => {
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           className="w-full mb-4 p-2 border rounded"
         />
+
+       
         <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
           Login
         </button>
