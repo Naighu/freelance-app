@@ -41,7 +41,7 @@ describe('Client Function Test', () => {
             user_id: user_id 
         };
 
-        // Stubbing DB calls
+
         const findCategoryStub = sinon.stub(Category, 'findById').resolves(category);
         const createStub = sinon.stub(Work, 'create').resolves(createdWork);
 
@@ -76,7 +76,7 @@ describe('Client Function Test', () => {
             body: { title: "New work", description: "Test work description", budget: 100, category_id: category_id }
         };
 
-        // Simulate category not existing by resolving with `null`
+        
         const findCategoryStub = sinon.stub(Category, 'findById').resolves(null);
 
         const res = {
@@ -114,7 +114,7 @@ describe('Client Function Test', () => {
             category: category.name, 
             user_id: user_id 
         };
-        // Force an error when checking the category
+    
         const findCategoryStub = sinon.stub(Category, 'findById').resolves(category);
         const createStub = sinon.stub(Work, 'create').resolves(createdWork).throws(new Error('DB Error'));
         const res = {
