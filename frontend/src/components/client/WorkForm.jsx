@@ -4,7 +4,7 @@ import axiosInstance from '../../axiosConfig';
 
 const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
   const { user } = useAuth();
-  const [formData, setFormData] = useState({ title: '', description: '', amount: null,category : '' });
+  const [formData, setFormData] = useState({ title: '', description: '', budget: null,category : '' });
 
   useEffect(() => {
     if (editingJob) {
@@ -21,9 +21,19 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
   }, [editingJob]);
 
   const handleSubmit = async (e) => {
-   
+    e.preventDefault();
+    await postJob(formValues, setJobs);
   };
 
+  const postJob = async (formValues, setJobs) => {
+    try {
+      const response = await axiosInstance.post('/api/work/post', formValues);
+      setJobs((prevJobs) => [...prevJobs, response.data]);
+    } catch (error) {
+      console.error('Error posting job:', error.response?.data || error.message);
+    }
+  };
+  
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
       <h1 className="text-2xl font-bold mb-4">{editingJob ? 'Edit Job' : 'Add new job'}</h1>
@@ -46,7 +56,7 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
         type="number"
         placeholder="Budget"
         required
-        value={formData.amount}
+        value={formData.budget}
         onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
         className="w-full mb-4 p-2 border rounded"
       />
