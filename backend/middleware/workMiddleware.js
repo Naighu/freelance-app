@@ -8,9 +8,9 @@ const workSchema = {
         title: { type: "string", minLength: 3 },
         description: { type: "string", minLength: 10 },
         budget: { type: "number", minimum: 0 },
-        category: { type: "string" }
+        category_id: { type: "string" }
     },
-    required: ["title", "description", "budget", "category"],
+    required: ["title", "description", "budget", "category_id"],
     additionalProperties: false
 };
 
