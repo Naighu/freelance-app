@@ -5,8 +5,8 @@ const { protect,protectAdmin } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.post('/post',validateWorkMiddleware,protect, postWork);
-router.post('/categories/add',validateAddCategoryiddleware, protectAdmin,addCategory);
-router.get('/categories', protectAdmin,getCategories);
+router.post('/category/add',validateAddCategoryiddleware, protectAdmin,addCategory);
+router.get('/category',getCategories);
 
 
 

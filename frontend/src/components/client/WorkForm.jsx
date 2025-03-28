@@ -15,7 +15,14 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
   // Fetch categories from API
   useEffect(() => {
     const fetchCategories = async () => {
-    
+      try {
+        const response = await axiosInstance.get('/api/work/category');
+        console.log(response.data);
+        
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error.response?.data || error.message);
+      }
     };
 
     fetchCategories();
@@ -42,7 +49,13 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
 
   const postJob = async (formValues, setJobs) => {
     try {
-      const response = await axiosInstance.post('/api/work/post', formValues);
+      const body = {
+        title: formValues.title,
+        description: formValues.description,
+        budget: formValues.budget,
+        category_id: formValues.category._id
+      }
+      const response = await axiosInstance.post('/api/work/post', body);
       setJobs((prevJobs) => [...prevJobs, response.data]);
     } catch (error) {
       console.error('Error posting job:', error.response?.data || error.message);

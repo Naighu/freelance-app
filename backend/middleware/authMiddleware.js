@@ -25,17 +25,21 @@ const protectAdmin = async (req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             token = req.headers.authorization.split(' ')[1];
+            console.log(token);
+            console.log( process.env.ADMIN_TOKEN);
 
-            if (token == process.env.ADMIN_TOKEN) {
-                next();
+            
+            if (token === process.env.ADMIN_TOKEN) {
+                return next();
             }
             else {
-                res.status(401).json({ message: 'Not authorized, You are not admin' });
+                return res.status(401).json({ message: 'Not authorized, You are not admin' });
             }
         } catch (error) {
             res.status(401).json({ message: 'Not authorized, token failed' });
         }
     }
+    return res.status(401).json({ message: 'Not authorized, You are not admin' });
 }
 
 module.exports = { protect,protectAdmin };
