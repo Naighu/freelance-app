@@ -4,7 +4,7 @@ import axiosInstance from '../../axiosConfig';
 
 const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
   const { user } = useAuth();
-  const [formData, setFormData] = useState({ title: '', description: '', amount: null,domain : '' });
+  const [formData, setFormData] = useState({ title: '', description: '', amount: null,category : '' });
 
   useEffect(() => {
     if (editingJob) {
@@ -53,9 +53,9 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
      
       <input
         type="string"
-        placeholder="Domain"
+        placeholder="Category"
         required
-        value={formData.domain}
+        value={formData.category}
         onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
         className="w-full mb-4 p-2 border rounded"
       />
