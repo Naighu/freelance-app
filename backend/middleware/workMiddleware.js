@@ -2,7 +2,7 @@ const Ajv = require("ajv");
 const ajv = new Ajv({ allErrors: true });
 
 
-const workSchema = {
+const postWorkSchema = {
     type: "object",
     properties: {
         title: { type: "string", minLength: 3 },
@@ -14,7 +14,7 @@ const workSchema = {
     additionalProperties: false
 };
 
-const validatePostWork = ajv.compile(workSchema);
+const validatePostWork = ajv.compile(postWorkSchema);
 const validateWorkMiddleware = (req, res, next) => {
     const valid = validatePostWork(req.body);
     if (!valid) {
@@ -23,4 +23,22 @@ const validateWorkMiddleware = (req, res, next) => {
     next();
 };
 
-module.exports = {validateWorkMiddleware};
+const AddCategorySchema = {
+    type: "object",
+    properties: {
+        name: { type: "string", minLength: 0 },
+    },
+    required: ["name"],
+    additionalProperties: false
+};
+
+const validateAddCategory = ajv.compile(AddCategorySchema);
+const validateAddCategoryiddleware = (req, res, next) => {
+    const valid = validateAddCategory(req.body);
+    if (!valid) {
+        return res.status(400).json({ errors: validateAddCategory.errors });
+    }
+    next();
+};
+
+module.exports = {validateWorkMiddleware,validateAddCategoryiddleware};
