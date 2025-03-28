@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "start": "node server.js",
+    "start": "nodemon",
     "dev": "nodemon server.js",
     "prod": "node server.js"
   },
@@ -21,9 +21,10 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
+    "bcryptjs": "^3.0.2",
     "esm": "^3.2.25",
     "mocha": "^11.0.1",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.22",
     "sinon": "^19.0.2"
   },
   "author": "Task Manager Team",
