@@ -117,6 +117,17 @@ const fetchAllWork = async (req, res) => {
     }
 }
 
+const fetchWorkById = async (req, res) => {
+    try {
+       const {id} = req.params;
+
+     const work= await Work.findById(id)
+
+     return res.status(200).json(work)
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 
 const applyWork = async (req, res) => { 
@@ -160,4 +171,4 @@ const applyWork = async (req, res) => {
     }
 }
 
-module.exports = { postWork, addCategory, getCategories, fetchAllWork ,editWork,deleteWork,applyWork};
+module.exports = { postWork, addCategory, getCategories, fetchAllWork ,fetchWorkById,editWork,deleteWork,applyWork};
