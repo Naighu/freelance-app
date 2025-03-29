@@ -6,6 +6,7 @@ import Register from './pages/auth/Register';
 import Profile from './pages/profile/Profile';
 import WorkList  from './pages/client/WorkList';
 import PostWorkForm from './components/client/PostWorkForm';
+import ApplyWorkPage from './pages/worker/ApplyWork';
 function App() {
 
   return (
@@ -17,6 +18,8 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/post-work" element={<PostWorkForm/>} />
         <Route path="/" element={<WorkList />} />
+        <Route path="/apply" element={<ApplyWorkPage />} />
+
       </Routes>
     </Router>
   );
