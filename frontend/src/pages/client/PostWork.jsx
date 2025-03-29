@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axiosInstance from '../../axiosConfig';
 import { useAuth } from '../../context/AuthContext';
 
 import PostWorkForm from '../../components/client/WorkForm'
