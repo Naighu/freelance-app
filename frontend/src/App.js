@@ -4,6 +4,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Profile from './pages/profile/Profile';
 import PostWork from './pages/client/PostWork';
+import WorkList  from './pages/client/WorkList';
 function App() {
   return (
     <Router>
@@ -13,6 +14,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/post-work" element={<PostWork/>} />
+        <Route path="/" element={<WorkList />} />
       </Routes>
     </Router>
   );
