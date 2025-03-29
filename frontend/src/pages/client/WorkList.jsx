@@ -13,9 +13,9 @@ const WorkList = () => {
     const [editingJob, setEditingJob] = useState(null);
     useEffect(() => {
         const fetchJobs = async () => {
-            if (!user) return;
+            
+           
             try {
-                console.log(user);
                 const response = await axiosInstance.get('/api/work/get', {
                     headers: { Authorization: `Bearer ${user.token}` },
                 });
@@ -29,7 +29,23 @@ const WorkList = () => {
             }
         };
 
+        //This function gets all the works without having the JWT token
+        const fetchAllWorks = async() => {
+            try {
+                const response = await axiosInstance.get('/api/work/get/all');
+                setJobs(response.data);
+            } catch (err) {
+                console.log(err);
+                setError(err.response?.data?.message || 'Failed to fetch jobs');
+            } finally {
+                setLoading(false);
+            }
+        }
+        if (!user) {
+             fetchAllWorks()
+        }else{
         fetchJobs();
+        }
     }, [user]);
 
     if (loading) {
@@ -84,7 +100,7 @@ const WorkList = () => {
                 {jobs.length > 0 ? (
                     jobs.map((job) => (
                         <Link
-                        to={ user.user_type ==='client'? `/work/view-applied/${job._id}` : `/work/apply/${job._id}`} 
+                        to={ !user? '/login':  user.user_type ==='client'? `/work/view-applied/${job._id}` : `/work/apply/${job._id}`} 
                         key={job._id}
                         className="bg-white rounded-md shadow-md flex flex-col justify-between relative"
                     >
