@@ -70,7 +70,7 @@ const ApplyWorkPage = () => {
             };
 
             // Make API request to backend to apply for the job
-            const response = await axiosInstance.post('/api/work/apply', applicationData, {
+            await axiosInstance.post('/api/work/apply', applicationData, {
                 headers: {
                     Authorization: `Bearer ${user.token}`  // Replace with actual token handling
                 }
