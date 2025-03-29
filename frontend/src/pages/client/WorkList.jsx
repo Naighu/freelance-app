@@ -10,25 +10,24 @@ const WorkList = () => {
 
     useEffect(() => {
         const fetchJobs = async () => {
+            if (!user) return;
             try {
                 console.log(user);
-                
                 const response = await axiosInstance.get('/api/work/get', {
                     headers: { Authorization: `Bearer ${user.token}` },
-                  });
+                });
                 console.log(response.data);
-                
                 setJobs(response.data);
             } catch (err) {
                 console.log(err);
-                
                 setError(err.response?.data?.message || 'Failed to fetch jobs');
             } finally {
                 setLoading(false);
             }
         };
+    
         fetchJobs();
-    }, []);
+    }, [user]);
 
     if (loading) {
         return (
