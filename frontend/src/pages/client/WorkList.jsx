@@ -13,9 +13,9 @@ const WorkList = () => {
     const [editingJob, setEditingJob] = useState(null);
     useEffect(() => {
         const fetchJobs = async () => {
-            if (!user) return;
+            
+           
             try {
-                console.log(user);
                 const response = await axiosInstance.get('/api/work/get', {
                     headers: { Authorization: `Bearer ${user.token}` },
                 });
@@ -29,7 +29,23 @@ const WorkList = () => {
             }
         };
 
+        //This function gets all the works without having the JWT token
+        const fetchAllWorks = async() => {
+            try {
+                const response = await axiosInstance.get('/api/work/get/all');
+                setJobs(response.data);
+            } catch (err) {
+                console.log(err);
+                setError(err.response?.data?.message || 'Failed to fetch jobs');
+            } finally {
+                setLoading(false);
+            }
+        }
+        if (!user) {
+             fetchAllWorks()
+        }else{
         fetchJobs();
+        }
     }, [user]);
 
     if (loading) {
@@ -84,27 +100,27 @@ const WorkList = () => {
                 {jobs.length > 0 ? (
                     jobs.map((job) => (
                         <Link
-                            to={user.user_type === 'client' ? `/work/view-applied/${job._id}` : `/work/apply/${job._id}`}
-                            key={job._id}
-                            className="bg-white rounded-md shadow-md flex flex-col justify-between relative"
-                        >
-                            <div key={job._id} className="bg-white p-4 rounded-md shadow-md flex flex-col justify-between relative">
-
-                                <div className="flex justify-between items-center">
-                                    <h2 className="text-lg font-bold">{job.title}</h2>
-                                    {user && user._id === job.user_id && (
-                                        <div className="flex space-x-2">
-                                            <FaEdit
-                                                className="text-blue-500 cursor-pointer hover:text-blue-700"
-                                                onClick={() => handleEdit(job)}
-                                            />
-                                            <FaTrash
-                                                className="text-red-500 cursor-pointer hover:text-red-700"
-                                                onClick={() => handleDelete(job._id)}
-                                            />
-                                        </div>
-                                    )}
-                                </div>
+                        to={ !user? '/login':  user.user_type ==='client'? `/work/view-applied/${job._id}` : `/work/apply/${job._id}`} 
+                        key={job._id}
+                        className="bg-white rounded-md shadow-md flex flex-col justify-between relative"
+                    >
+                        <div key={job._id} className="bg-white p-4 rounded-md shadow-md flex flex-col justify-between relative">
+                           
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-lg font-bold">{job.title}</h2>
+                                {user && (
+                                    <div className="flex space-x-2">
+                                        <FaEdit
+                                            className="text-blue-500 cursor-pointer hover:text-blue-700"
+                                            onClick={() => handleEdit(job)}
+                                        />
+                                        <FaTrash
+                                            className="text-red-500 cursor-pointer hover:text-red-700"
+                                            onClick={() => handleDelete(job._id)}
+                                        />
+                                    </div>
+                                )}
+                            </div>
 
 
                                 <p className="text-sm text-gray-500">{job.description}</p>
