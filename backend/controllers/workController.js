@@ -6,8 +6,8 @@ const addCategory = async (req, res) => {
     try {
         const { name } = req.body;
 
-        const category = await Category.create({name})
-    
+        const category = await Category.create({ name })
+
         return res.status(201).json(category)
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -17,7 +17,7 @@ const addCategory = async (req, res) => {
 const getCategories = async (req, res) => {
     try {
         const categories = await Category.find()
-    
+
         return res.status(201).json(categories)
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -42,6 +42,22 @@ const postWork = async (req, res) => {
     }
 }
 
+//This function retuns all the works posted by the client,if the user type is client
+//Otherwise return all the works.
+const fetchAllWork = async (req, res) => {
+    try {
+        if (req.user.user_type === 'client') {
+            const myWorks = await Work.find({ user_id: req.user.id })
+
+            return res.status(200).json(myWorks)
+        } else {
+            const allWorks = await Work.find()
+            return res.status(200).json(allWorks)
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 
-module.exports = { postWork,addCategory ,getCategories};
+module.exports = { postWork, addCategory, getCategories, fetchAllWork };
