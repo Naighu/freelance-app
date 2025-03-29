@@ -1,98 +1,82 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from "react";
 import { useAuth } from '../../context/AuthContext';
-import axiosInstance from '../../axiosConfig';
 
-const Profile = () => {
-  const { user } = useAuth(); // Access user token from context
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    university: '',
-    address: '',
-  });
-  const [loading, setLoading] = useState(false);
+const ProfilePage = () => {
+       const { user:loggedUser } = useAuth();
+  
+  const [user, setUser] = useState(loggedUser);
 
-  useEffect(() => {
-    // Fetch profile data from the backend
-    const fetchProfile = async () => {
-      setLoading(true);
-      try {
-        const response = await axiosInstance.get('/api/auth/profile', {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        setFormData({
-          name: response.data.name,
-          email: response.data.email,
-          university: response.data.university || '',
-          address: response.data.address || '',
-        });
-      } catch (error) {
-        alert('Failed to fetch profile. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedUser, setEditedUser] = useState(user);
 
-    if (user) fetchProfile();
-  }, [user]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await axiosInstance.put('/api/auth/profile', formData, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      alert('Profile updated successfully!');
-    } catch (error) {
-      alert('Failed to update profile. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+  const handleChange = (e) => {
+    setEditedUser({ ...editedUser, [e.target.name]: e.target.value });
   };
 
-  if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
-  }
+  const handleSave = () => {
+    setUser(editedUser);
+    setIsEditing(false);
+  };
 
   return (
-    <div className="max-w-md mx-auto mt-20">
-      <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
-        <h1 className="text-2xl font-bold mb-4 text-center">Your Profile</h1>
-        <input
-          type="text"
-          placeholder="Name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="University"
-          value={formData.university}
-          onChange={(e) => setFormData({ ...formData, university: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          value={formData.address}
-          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
-          {loading ? 'Updating...' : 'Update Profile'}
-        </button>
-      </form>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="w-96 p-6 bg-white shadow-lg rounded-xl">
+        {isEditing ? (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Name</label>
+              <input
+                type="text"
+                name="name"
+                value={editedUser.name}
+                onChange={handleChange}
+                className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={editedUser.email}
+                onChange={handleChange}
+                className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">User Type</label>
+              <input
+                type="text"
+                name="userType"
+                disabled
+                value={editedUser.user_type}
+                onChange={handleChange}
+                className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <button
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+          </div>
+        ) : (
+          <div className="text-center">
+            <h2 className="text-xl font-bold text-gray-900">{user.name}</h2>
+            <p className="text-gray-600">{user.email}</p>
+            <p className="text-gray-500">{user.user_type}</p>
+            <button
+              className="mt-4 w-full bg-gray-800 text-white py-2 rounded-md hover:bg-gray-900"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit Profile
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default Profile;
+export default ProfilePage;
