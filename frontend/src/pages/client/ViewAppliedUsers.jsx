@@ -11,8 +11,6 @@ const ViewAppliedUsers = () => {
     const { user } = useAuth();
     const {jobId} = useParams();
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
 
@@ -25,13 +23,13 @@ const ViewAppliedUsers = () => {
             setUsers(response.data['applied_users']);
         } catch (err) {
             console.log(err);
-            setError(err.response?.data?.message || 'Failed to fetch work');
+            // setError(err.response?.data?.message || 'Failed to fetch work');
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     }
     fetchAppliedUsers()
-  }, []);
+  }, [jobId,user.token]);
 
   const handleContact = (userName) => {
     alert(`Contacting ${userName}...`);
