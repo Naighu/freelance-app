@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; 
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../axiosConfig';
@@ -27,7 +28,7 @@ const WorkList = () => {
                 setLoading(false);
             }
         };
-    
+
         fetchJobs();
     }, [user]);
 
@@ -79,17 +80,23 @@ const WorkList = () => {
             <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {jobs.length > 0 ? (
                     jobs.map((job) => (
+
                         <div key={job._id} className="bg-white p-4 rounded-md shadow-md flex flex-col justify-between relative">
+                            <Link
+                                to={`/work/apply/${job._id}`} // Navigate to the job detail page
+                                key={job._id}
+                                className="bg-white p-4 rounded-md shadow-md flex flex-col justify-between relative"
+                            ></Link>
                             <div className="flex justify-between items-center">
                                 <h2 className="text-lg font-bold">{job.title}</h2>
                                 {user && (
                                     <div className="flex space-x-2">
-                                        <FaEdit 
-                                            className="text-blue-500 cursor-pointer hover:text-blue-700" 
+                                        <FaEdit
+                                            className="text-blue-500 cursor-pointer hover:text-blue-700"
                                             onClick={() => handleEdit(job)}
                                         />
-                                        <FaTrash 
-                                            className="text-red-500 cursor-pointer hover:text-red-700" 
+                                        <FaTrash
+                                            className="text-red-500 cursor-pointer hover:text-red-700"
                                             onClick={() => handleDelete(job._id)}
                                         />
                                     </div>

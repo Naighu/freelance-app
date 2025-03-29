@@ -18,7 +18,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/post-work" element={<PostWorkForm/>} />
         <Route path="/" element={<WorkList />} />
-        <Route path="/apply" element={<ApplyWorkPage />} />
+        <Route path="/work/apply/:jobId" element={<ApplyWorkPage/>} />
 
       </Routes>
     </Router>
