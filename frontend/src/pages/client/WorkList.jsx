@@ -52,6 +52,9 @@ const WorkList = () => {
         setEditingJob(job)
     };
 
+    console.log( user );
+    
+
     const handleDelete = async (jobId) => {
         if (!user) return;
         if (!window.confirm('Are you sure you want to delete this work?')) return;
@@ -71,8 +74,8 @@ const WorkList = () => {
             <h1 className="text-2xl font-bold mb-4 text-center">Posted Work</h1>
             {editingJob && (
                 <PostWorkForm
-                    editingJob={editingJob} // Pass the job data to the form
-                    setEditingJob={setEditingJob} // To close the form after submission
+                    editingJob={editingJob} 
+                    setEditingJob={setEditingJob} 
                     jobs={jobs}
                     setJobs={setJobs}
                 />
@@ -80,13 +83,13 @@ const WorkList = () => {
             <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {jobs.length > 0 ? (
                     jobs.map((job) => (
-
+                        <Link
+                        to={ user.user_type =='client'? `/work/view-applied/${job._id}` : `/work/apply/${job._id}`} 
+                        key={job._id}
+                        className="bg-white rounded-md shadow-md flex flex-col justify-between relative"
+                    >
                         <div key={job._id} className="bg-white p-4 rounded-md shadow-md flex flex-col justify-between relative">
-                            <Link
-                                to={`/work/apply/${job._id}`} // Navigate to the job detail page
-                                key={job._id}
-                                className="bg-white p-4 rounded-md shadow-md flex flex-col justify-between relative"
-                            ></Link>
+                           
                             <div className="flex justify-between items-center">
                                 <h2 className="text-lg font-bold">{job.title}</h2>
                                 {user && (
@@ -102,6 +105,7 @@ const WorkList = () => {
                                     </div>
                                 )}
                             </div>
+
                             <p className="text-sm text-gray-500">{job.description}</p>
                             <p className="text-sm text-gray-500">Budget: ${job.budget}</p>
                             <p className="text-sm text-gray-500">Category: {job.category}</p>
@@ -110,6 +114,8 @@ const WorkList = () => {
                                 <p className="text-sm text-gray-500">Applied: {job.applied.length}</p>
                             )}
                         </div>
+                        </Link>
+                        
                     ))
                 ) : (
                     <p className="text-center text-gray-600">No jobs available.</p>
