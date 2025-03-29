@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../axiosConfig';
+import PostWorkForm from '../../components/client/PostWorkForm';
 
 const WorkList = () => {
     const { user } = useAuth();
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const [editingJob, setEditingJob] = useState(null);
     useEffect(() => {
         const fetchJobs = async () => {
             if (!user) return;
@@ -46,17 +47,35 @@ const WorkList = () => {
         );
     }
 
-    const handleEdit = (jobId) => {
-        console.log('Edit job:', jobId);
-       
+    const handleEdit = (job) => {
+        setEditingJob(job)
     };
 
     const handleDelete = async (jobId) => {
-     
+        if (!user) return;
+        if (!window.confirm('Are you sure you want to delete this work?')) return;
+
+        try {
+            await axiosInstance.delete(`/api/work/delete`, {
+                headers: { Authorization: `Bearer ${user.token}` },
+                data: { work_id: jobId }
+            });
+            setJobs(jobs.filter((job) => job._id !== jobId));
+        } catch (err) {
+            console.error('Failed to delete job:', err);
+        }
     };
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4 text-center">Posted Work</h1>
+            {editingJob && (
+                <PostWorkForm
+                    editingJob={editingJob} // Pass the job data to the form
+                    setEditingJob={setEditingJob} // To close the form after submission
+                    jobs={jobs}
+                    setJobs={setJobs}
+                />
+            )}
             <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {jobs.length > 0 ? (
                     jobs.map((job) => (
@@ -67,7 +86,7 @@ const WorkList = () => {
                                     <div className="flex space-x-2">
                                         <FaEdit 
                                             className="text-blue-500 cursor-pointer hover:text-blue-700" 
-                                            onClick={() => handleEdit(job._id)}
+                                            onClick={() => handleEdit(job)}
                                         />
                                         <FaTrash 
                                             className="text-red-500 cursor-pointer hover:text-red-700" 

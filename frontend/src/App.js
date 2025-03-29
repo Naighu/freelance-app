@@ -4,8 +4,8 @@ import Navbar from './components/Navbar';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Profile from './pages/profile/Profile';
-import PostWork from './pages/client/PostWork';
 import WorkList  from './pages/client/WorkList';
+import PostWorkForm from './components/client/PostWorkForm';
 function App() {
 
   return (
@@ -15,7 +15,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/post-work" element={<PostWork/>} />
+        <Route path="/post-work" element={<PostWorkForm/>} />
         <Route path="/" element={<WorkList />} />
       </Routes>
     </Router>
