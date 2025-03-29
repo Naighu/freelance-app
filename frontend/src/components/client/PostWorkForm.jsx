@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosConfig';
+import { useAuth } from '../../context/AuthContext';
+import { useHref } from 'react-router-dom';
 
 const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
+   const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -16,7 +19,7 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
       try {
         const response = await axiosInstance.get('/api/work/category');
         console.log(response.data);
-        
+
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error.response?.data || error.message);
@@ -42,7 +45,11 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await postJob(formData, setJobs);
+    if (editingJob) {
+     await editJob(formData,setJobs)
+    } else {
+      await postJob(formData, setJobs);
+    }
   };
 
   const postJob = async (formValues, setJobs) => {
@@ -53,8 +60,37 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
         budget: formValues.budget,
         category_id: formValues.category._id
       }
-      const response = await axiosInstance.post('/api/work/post', body);
+      const response = await axiosInstance.post('/api/work/post', {
+        headers: { Authorization: `Bearer ${user.token}` },
+        data: body
+      });
       setJobs((prevJobs) => [...prevJobs, response.data]);
+    } catch (error) {
+      console.error('Error posting job:', error.response?.data || error.message);
+    }
+  };
+
+  const editJob = async (formValues, setJobs) => {
+    
+    try {
+      
+      const body = {
+        work_id: editingJob._id,
+        title: formValues.title,
+        description: formValues.description,
+        budget: formValues.budget,
+        category_id: formValues.category._id
+      }
+      const response = await axiosInstance.put('/api/work/update',body, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+
+
+     setJobs((prevJobs) => 
+      prevJobs.map((job) => 
+        job._id === response.data._id ? response.data : job
+      )
+    );
     } catch (error) {
       console.error('Error posting job:', error.response?.data || error.message);
     }
