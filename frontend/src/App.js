@@ -7,6 +7,7 @@ import Profile from './pages/profile/Profile';
 import WorkList  from './pages/client/WorkList';
 import PostWorkForm from './components/client/PostWorkForm';
 import ApplyWorkPage from './pages/worker/ApplyWork';
+import ViewAppliedUsers from './pages/client/ViewAppliedUsers';
 function App() {
 
   return (
@@ -18,7 +19,9 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/post-work" element={<PostWorkForm/>} />
         <Route path="/" element={<WorkList />} />
+        <Route path="/work/view-applied/:jobId" element={<ViewAppliedUsers/>} />
         <Route path="/work/apply/:jobId" element={<ApplyWorkPage/>} />
+
 
       </Routes>
     </Router>
