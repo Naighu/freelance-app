@@ -1,7 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useAuth } from './context/AuthContext';
-import { setAuthToken } from './axiosConfig';
 
 import Navbar from './components/Navbar';
 import Login from './pages/auth/Login';
