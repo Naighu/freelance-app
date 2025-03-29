@@ -84,7 +84,7 @@ const WorkList = () => {
                 {jobs.length > 0 ? (
                     jobs.map((job) => (
                         <Link
-                        to={ user.user_type =='client'? `/work/view-applied/${job._id}` : `/work/apply/${job._id}`} 
+                        to={ user.user_type ==='client'? `/work/view-applied/${job._id}` : `/work/apply/${job._id}`} 
                         key={job._id}
                         className="bg-white rounded-md shadow-md flex flex-col justify-between relative"
                     >
