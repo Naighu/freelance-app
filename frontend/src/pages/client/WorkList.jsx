@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../axiosConfig';
@@ -68,8 +68,8 @@ const WorkList = () => {
         setEditingJob(job)
     };
 
-    console.log( user );
-    
+    console.log(user);
+
 
     const handleDelete = async (jobId) => {
         if (!user) return;
@@ -90,8 +90,8 @@ const WorkList = () => {
             <h1 className="text-2xl font-bold mb-4 text-center">Posted Work</h1>
             {editingJob && (
                 <PostWorkForm
-                    editingJob={editingJob} 
-                    setEditingJob={setEditingJob} 
+                    editingJob={editingJob}
+                    setEditingJob={setEditingJob}
                     jobs={jobs}
                     setJobs={setJobs}
                 />
@@ -122,16 +122,17 @@ const WorkList = () => {
                                 )}
                             </div>
 
-                            <p className="text-sm text-gray-500">{job.description}</p>
-                            <p className="text-sm text-gray-500">Budget: ${job.budget}</p>
-                            <p className="text-sm text-gray-500">Category: {job.category}</p>
 
-                            {job.applied && (
-                                <p className="text-sm text-gray-500">Applied: {job.applied.length}</p>
-                            )}
-                        </div>
+                                <p className="text-sm text-gray-500">{job.description}</p>
+                                <p className="text-sm text-gray-500">Budget: ${job.budget}</p>
+                                <p className="text-sm text-gray-500">Category: {job.category}</p>
+
+                                {job.applied && (
+                                    <p className="text-sm text-gray-500">Applied: {job.applied.length}</p>
+                                )}
+                            </div>
                         </Link>
-                        
+
                     ))
                 ) : (
                     <p className="text-center text-gray-600">No jobs available.</p>
