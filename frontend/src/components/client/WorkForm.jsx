@@ -3,7 +3,6 @@ import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../axiosConfig';
 
 const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
-  const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
