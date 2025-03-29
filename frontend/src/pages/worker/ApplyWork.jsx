@@ -35,7 +35,7 @@ const ApplyWorkPage = () => {
             }
         };
         fetchJobDetails();
-    }, [jobId]);
+    }, [jobId,user.token]);
   
     // Handle form submission
     const handleApply =async () => {
