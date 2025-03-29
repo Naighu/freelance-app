@@ -41,4 +41,67 @@ const validateAddCategoryiddleware = (req, res, next) => {
     next();
 };
 
-module.exports = {validateWorkMiddleware,validateAddCategoryiddleware};
+
+const EditWorkSchema = {
+    type: "object",
+    properties: {
+        work_id:  { type: "string" },
+        title: { type: "string", minLength: 3 },
+        description: { type: "string", minLength: 10 },
+        budget: { type: "number", minimum: 0 },
+        category_id: { type: "string" }
+    },
+    required: ["work_id"],
+    additionalProperties: false
+};
+
+const validateEditWork = ajv.compile(EditWorkSchema);
+const validateEditWorkMiddleware = (req, res, next) => {
+    const valid = validateEditWork(req.body);
+    if (!valid) {
+        return res.status(400).json({ errors: validateEditWork.errors });
+    }
+    next();
+};
+
+const DeleteWorkSchema = {
+    type: "object",
+    properties: {
+        work_id:  { type: "string" }
+    },
+    required: ["work_id"],
+    additionalProperties: false
+};
+
+const validateDeleteWork = ajv.compile(DeleteWorkSchema);
+const validateDeleteWorkMiddleware = (req, res, next) => {
+    const valid = validateDeleteWork(req.body);
+    if (!valid) {
+        return res.status(400).json({ errors: validateDeleteWork.errors });
+    }
+    next();
+};
+
+
+const ApplyWorkSchema = {
+    type: "object",
+    properties: {
+        work_id:  { type: "string" },
+        message:  { type: "string",minLength: 1 },
+        amount: {type: "number"}
+
+    },
+    required: ["work_id","message","amount"],
+    additionalProperties: false
+};
+
+const validateApplyWork = ajv.compile(ApplyWorkSchema);
+const validateApplyWorkMiddleware = (req, res, next) => {
+    const valid = validateApplyWork(req.body);
+    if (!valid) {
+        return res.status(400).json({ errors: validateApplyWork.errors });
+    }
+    next();
+};
+
+module.exports = {validateWorkMiddleware,validateAddCategoryiddleware,validateEditWorkMiddleware,validateDeleteWorkMiddleware,validateApplyWorkMiddleware};
