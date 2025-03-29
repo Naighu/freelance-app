@@ -42,6 +42,19 @@ const postWork = async (req, res) => {
     }
 }
 
+//This function retuns all the works posted by the client,if the user type is client
+//Otherwise return all the works.
+const fetchAllWork = async (req, res) => {
+   
+    if(req.user.user_type === 'client'){
+        const myWorks = await Work.find({user_id: req.user.id})
+
+        return res.status(200).json(myWorks)
+    }else{
+        const allWorks = await Work.find()
+        return res.status(200).json(allWorks)
+    }
+}
 
 
-module.exports = { postWork,addCategory ,getCategories};
+module.exports = { postWork,addCategory ,getCategories,fetchAllWork};
