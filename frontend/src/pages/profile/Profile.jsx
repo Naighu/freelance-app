@@ -22,12 +22,15 @@ const ProfilePage = () => {
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="w-96 p-6 bg-white shadow-lg rounded-xl">
         {isEditing ? (
-          <div className="space-y-4">
+          <form className="space-y-4" onSubmit={
+            handleSave
+          }>
             <div>
               <label className="block text-sm font-medium text-gray-700">Name</label>
               <input
                 type="text"
                 name="name"
+                minLength={3}
                 value={editedUser.name}
                 onChange={handleChange}
                 className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -54,13 +57,14 @@ const ProfilePage = () => {
                 className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <button
+            <button type="submit"
+      
               className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-              onClick={handleSave}
+              // onClick={handleSave}
             >
               Save
             </button>
-          </div>
+          </form>
         ) : (
           <div className="text-center">
             <h2 className="text-xl font-bold text-gray-900">{user.name}</h2>
