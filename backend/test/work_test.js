@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const sinon = require('sinon');
 
 
-const { postWork } = require('../controllers/workController');
+const { postWork,fetchAllWork } = require('../controllers/workController');
 const Work = require('../models/Work');
 const Category = require('../models/Category');
 
@@ -129,6 +129,80 @@ describe('Client Function Test', () => {
         expect(res.json.calledWithMatch({ message: 'DB Error' })).to.be.true;
 
         findCategoryStub.restore();
+    });
+
+    
+    it('should return only the client\'s works when user_type is "client"', async () => {
+        const userId = new mongoose.Types.ObjectId();
+        const myWorks = [
+            { _id: new mongoose.Types.ObjectId(), title: 'Work 1', description: "This is a short description", budget: 1, user_id: userId },
+            { _id: new mongoose.Types.ObjectId(), title: 'Work 2', description: "This is a short description", budget: 1, user_id: userId },
+        ];
+
+        const req = {
+            user: { id: userId, user_type: 'client' }, // Added user_type
+            body: {},
+        };
+
+        const res = {
+            status: sinon.stub().returnsThis(),
+            json: sinon.spy(),
+        };
+
+        const findStub = sinon.stub(Work, 'find').resolves(myWorks);
+
+        await fetchAllWork(req, res);
+
+        expect(findStub.calledOnceWith({ user_id: userId })).to.be.true;
+        expect(res.status.calledWith(200)).to.be.true;
+        expect(res.json.calledWith(myWorks)).to.be.true;
+        findStub.restore()
+
+    });
+
+    it('should return all works when user_type is  "worker"', async () => {
+        const works = [
+            { _id: new mongoose.Types.ObjectId(), title: 'Work 1', description: "This is a short description", budget: 1, user_id: new mongoose.Types.ObjectId() },
+            { _id: new mongoose.Types.ObjectId(), title: 'Work 2', description: "This is a short description", budget: 1, user_id: new mongoose.Types.ObjectId() },
+        ];
+
+        const req = {
+            user: { id: new mongoose.Types.ObjectId(), user_type: 'worker' },
+        };
+
+        const res = {
+            status: sinon.stub().returnsThis(),
+            json: sinon.spy(),
+        };
+
+        const findStub = sinon.stub(Work, 'find').resolves(works);
+
+        await fetchAllWork(req, res);
+
+        expect(findStub.calledOnceWith()).to.be.true;
+        expect(res.status.calledWith(200)).to.be.true;
+        expect(res.json.calledWith(works)).to.be.true;
+        findStub.restore()
+
+    });
+
+    it('should return a 500 error if there is a server error', async () => {
+        const req = {
+            user: { id: new mongoose.Types.ObjectId(), user_type: 'client' },
+        };
+
+        const res = {
+            status: sinon.stub().returnsThis(),
+            json: sinon.spy(),
+        };
+
+        const findStub = sinon.stub(Work, 'find').throws(new Error('Database error'));
+
+        await fetchAllWork(req, res);
+
+        expect(findStub.calledOnce).to.be.true;
+        expect(res.status.calledWith(500)).to.be.true;
+        expect(res.json.calledWith({ message: 'Database error' })).to.be.true;
     });
 
 })
