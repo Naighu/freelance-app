@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useAuth } from '../../context/AuthContext';
+import axiosInstance from '../../axiosConfig';
 
 const ProfilePage = () => {
        const { user:loggedUser } = useAuth();
   
   const [user, setUser] = useState(loggedUser);
-
+const [loading,setLoading] = useState(false)
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState(user);
 
@@ -13,8 +14,34 @@ const ProfilePage = () => {
     setEditedUser({ ...editedUser, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
+  const handleSave =async (e) => {
+    e.preventDefault()
+    try {
+      setLoading(true);
+
+      const body = {
+        name: editedUser.name,
+        password: editedUser.password
+      }
+
+      // Make API request to backend to apply for the job
+      await axiosInstance.put('/api/auth/profile', body, {
+          headers: {
+              Authorization: `Bearer ${user.token}`  // Replace with actual token handling
+          }
+      });
+
+      alert('Profile Updated');
+      editedUser.password =''
     setUser(editedUser);
+
+      // Optionally, handle further success logic here (e.g., clear form, navigate)
+  } catch (err) {
+      alert('Failed to update profile. Please try again later.');
+      console.error(err);
+  } finally {
+      setLoading(false);
+  }
     setIsEditing(false);
   };
 
@@ -37,11 +64,11 @@ const ProfilePage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-gray-700">Set new password</label>
               <input
-                type="email"
-                name="email"
-                value={editedUser.email}
+                type="password"
+                name="password"
+                value={editedUser.password}
                 onChange={handleChange}
                 className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -58,11 +85,14 @@ const ProfilePage = () => {
               />
             </div>
             <button type="submit"
-      
-              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-              // onClick={handleSave}
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 flex justify-center items-center"
+              disabled={loading}
             >
-              Save
+              {loading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              ) : (
+                "Save"
+              )}
             </button>
           </form>
         ) : (
