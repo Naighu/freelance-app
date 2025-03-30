@@ -26,6 +26,8 @@ const getCategories = async (req, res) => {
 
 const postWork = async (req, res) => {
     try {
+        console.log(req.body);
+        
         const { title, description, budget, category_id } = req.body;
 
         //Check if the category already exists
@@ -102,9 +104,12 @@ const deleteWork = async (req, res) => {
 
 //This function retuns all the works posted by the client,if the user type is client
 //Otherwise return all the works.
-const fetchAllWork = async (req, res) => {
+const fetchAllWorkProtected = async (req, res) => {
     try {
+        
         if (req.user.user_type === 'client') {
+        console.log(req.user.user_type);
+
             const myWorks = await Work.find({ user_id: req.user.id })
 
             return res.status(200).json(myWorks)
@@ -117,11 +122,33 @@ const fetchAllWork = async (req, res) => {
     }
 }
 
+const fetchAllWork = async (req, res) => {
+    try {
+        
+    
+
+        const works = await Work.find()
+
+        return res.status(200).json(works)
+      
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 const fetchWorkById = async (req, res) => {
     try {
        const {id} = req.params;
 
-     const work= await Work.findById(id)
+      
+
+     const work= await Work.findById(id).populate({
+        path: 'applied_users',
+        populate: {
+            path: 'user_id' ,
+            select: '-password'
+        }
+})
 
      return res.status(200).json(work)
     } catch (error) {
@@ -171,4 +198,4 @@ const applyWork = async (req, res) => {
     }
 }
 
-module.exports = { postWork, addCategory, getCategories, fetchAllWork ,fetchWorkById,editWork,deleteWork,applyWork};
+module.exports = { postWork, addCategory, getCategories, fetchAllWork ,fetchWorkById,editWork,deleteWork,applyWork,fetchAllWorkProtected};

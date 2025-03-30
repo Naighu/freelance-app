@@ -89,7 +89,6 @@ const ApplyWorkSchema = {
         work_id:  { type: "string" },
         message:  { type: "string",minLength: 1 },
         amount: {type: "number"}
-
     },
     required: ["work_id","message","amount"],
     additionalProperties: false
@@ -97,6 +96,7 @@ const ApplyWorkSchema = {
 
 const validateApplyWork = ajv.compile(ApplyWorkSchema);
 const validateApplyWorkMiddleware = (req, res, next) => {
+    
     const valid = validateApplyWork(req.body);
     if (!valid) {
         return res.status(400).json({ errors: validateApplyWork.errors });
