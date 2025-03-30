@@ -159,14 +159,7 @@ const WorkList = () => {
                         </Link>
 
                     ))
-                ) : user.user_type === 'client' ? (
-                    <Link
-                    to="/post-work"
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 block text-center"
-                  >
-                    Post Work
-                  </Link>
-                ) : (
+                )  : (
                     <p className="text-center text-gray-600">No jobs available.</p>
                 )}
             </div>
