@@ -61,7 +61,7 @@ const ApplyWorkPage = () => {
         }
 
         try {
-            setLoading(true);
+            setLoading(true)
             setFormError(null);
             setFormSuccess(null);
 
@@ -87,7 +87,7 @@ const ApplyWorkPage = () => {
             }
         } catch (err) {
             setFormError(err.response.data.message || 'Failed to submit application. Please try again later.');
-            console.error(err);
+            console.error(err.response.data.message);
         } finally {
             setLoading(false);
         }
@@ -108,14 +108,14 @@ const ApplyWorkPage = () => {
                     <h2 className="text-xl font-bold mb-2">{work.title}</h2>
                     <p className="text-sm text-gray-500 mb-2">{work.description}</p>
                     <p className="text-sm text-gray-500 mb-2">Budget: ${work.budget}</p>
-                    <p className="text-sm text-gray-500 mb-2">Category: {work.category}</p>
+                    <p className="text-sm text-gray-500 mb-2"><span className='badge'>{work.category}</span></p>
                 </div>
     
                 {/* Apply Section */}
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <h3 className="text-lg font-semibold mb-4">Send Offer</h3>
-                    {(formError && formError !== '') && <div className='alert alert-danger'>{formError}</div>}
-                    {(formSuccess && formSuccess !== '') && <div className='alert alert-success'>{formSuccess}</div>}
+                    {(formError && formError !== '') && <div className='text-red-500 font-semibold'>{formError}</div>}
+                    {(formSuccess && formSuccess !== '') && <div className='text-green-500 font-semibold'>{formSuccess}</div>}
                     <div className="flex flex-col space-y-4">
                         <label className="text-sm font-medium">Enter your offer amount:</label>
                         <div className="flex items-center space-x-2">

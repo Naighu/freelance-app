@@ -26,8 +26,6 @@ const getCategories = async (req, res) => {
 
 const postWork = async (req, res) => {
     try {
-        console.log(req.body);
-        
         const { title, description, budget, category_id } = req.body;
 
         //Check if the category already exists
@@ -104,12 +102,9 @@ const deleteWork = async (req, res) => {
 
 //This function retuns all the works posted by the client,if the user type is client
 //Otherwise return all the works.
-const fetchAllWorkProtected = async (req, res) => {
+const fetchAllWork = async (req, res) => {
     try {
-        
-        if (req.user.user_type === 'client') {
-        console.log(req.user.user_type);
-
+        if (req.user && req.user.user_type === 'client') {
             const myWorks = await Work.find({ user_id: req.user.id })
 
             return res.status(200).json(myWorks)
@@ -122,33 +117,11 @@ const fetchAllWorkProtected = async (req, res) => {
     }
 }
 
-const fetchAllWork = async (req, res) => {
-    try {
-        
-    
-
-        const works = await Work.find()
-
-        return res.status(200).json(works)
-      
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-
 const fetchWorkById = async (req, res) => {
     try {
        const {id} = req.params;
 
-      
-
-     const work= await Work.findById(id).populate({
-        path: 'applied_users',
-        populate: {
-            path: 'user_id' ,
-            select: '-password'
-        }
-})
+     const work= await Work.findById(id).populate('applied_users.user_id')
 
      return res.status(200).json(work)
     } catch (error) {
@@ -159,6 +132,7 @@ const fetchWorkById = async (req, res) => {
 
 const applyWork = async (req, res) => { 
     try {
+        
         if (req.user.user_type === 'client') {
             
 
@@ -178,6 +152,7 @@ const applyWork = async (req, res) => {
         //Check if the worker already applied
         const existingApplication = work.applied_users.find(application => application.user_id.equals(req.user._id.toString()));
         if (existingApplication) {
+
             return res.status(400).json({ message: "You have already applied for this job" });
         }
 
@@ -198,4 +173,4 @@ const applyWork = async (req, res) => {
     }
 }
 
-module.exports = { postWork, addCategory, getCategories, fetchAllWork ,fetchWorkById,editWork,deleteWork,applyWork,fetchAllWorkProtected};
+module.exports = { postWork, addCategory, getCategories, fetchAllWork ,fetchWorkById,editWork,deleteWork,applyWork};

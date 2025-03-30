@@ -1,4 +1,5 @@
-
+const Ajv = require("ajv");
+const ajv = new Ajv({ allErrors: true });
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -41,4 +42,22 @@ const protectAdmin = async (req, res, next) => {
     return res.status(401).json({ message: 'Not authorized, You are not admin' });
 }
 
-module.exports = { protect,protectAdmin };
+
+const UpdateProfileSchema = {
+    type: "object",
+    properties: {
+        name: { type: "string", minLength: 3 },
+        password: { type: "string", minLength: 3 },
+    },
+    additionalProperties: false
+};
+
+const validateUpdateProfile = ajv.compile(UpdateProfileSchema);
+const validateUpdateProfileMiddleware = (req, res, next) => {
+    const valid = validateUpdateProfile(req.body);
+    if (!valid) {
+        return res.status(400).json({ errors: validateUpdateProfile.errors });
+    }
+    next();
+};
+module.exports = { protect,protectAdmin,validateUpdateProfileMiddleware };

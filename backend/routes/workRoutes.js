@@ -1,5 +1,5 @@
 const express = require('express');
-const { postWork,addCategory,getCategories,fetchAllWork,fetchAllWorkProtected,editWork ,deleteWork,applyWork,fetchWorkById} = require('../controllers/workController');
+const { postWork,addCategory,getCategories,fetchAllWork,editWork ,deleteWork,applyWork,fetchWorkById} = require('../controllers/workController');
 const { validateWorkMiddleware,validateAddCategoryiddleware,validateEditWorkMiddleware,validateDeleteWorkMiddleware,validateApplyWorkMiddleware } = require('../middleware/workMiddleware');
 const { protect,protectAdmin } = require('../middleware/authMiddleware');
 const router = express.Router();
@@ -7,7 +7,6 @@ const router = express.Router();
 router.post('/post',validateWorkMiddleware,protect, postWork);
 router.post('/category/add',validateAddCategoryiddleware, protectAdmin,addCategory);
 router.get('/category',getCategories);
-router.get('/get',protect,fetchAllWorkProtected);
 router.get('/get/all',fetchAllWork);
 
 router.get('/get/:id',protect,fetchWorkById);
