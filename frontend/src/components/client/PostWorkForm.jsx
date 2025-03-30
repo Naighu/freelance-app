@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosConfig';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate, useLocation } from "react-router-dom";
 
 const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob, setIsModalOpen }) => {
    const { user } = useAuth();
