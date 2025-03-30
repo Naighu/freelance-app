@@ -1,69 +1,105 @@
-# **Assignment: Full-Stack CRUD Application Development with DevOps Practices**
+# Freelance Website
 
-## **Objective**
+A full-stack freelance platform built with React (frontend) and Node.js (backend). It is currently in production and can access the website <a href="http://13.54.187.158/">here</a>.
+
+## PR Request
+- You can raise PR request and it will be merged to main when all the testcases have been passed.
+
+## Features
+- User authentication (workers & Clients)
+- Project posting and applying system
+- Profile management
+
+## Project Structure
+  - frontend contains react code
+  - backend contains NodeJs code
+
+## Prerequisites
+- Node.js (v14+)
+- npm or yarn
+- MongoDB (local or Atlas)
 
 
-You have been provided with a starter project that includes user authentication using  **Node.js, React.js, and MongoDB**. Your task is to extend this application by implementing **CRUD (Create, Read, Update, Delete) operations** for a real-world application of your choice, while following industry best practices such as:
+## Setup
 
-* **Project Management with JIRA**
-* **Requirement Diagram using SysML**
-* **Version Control using GitHub**
-* **CI/CD Integration for Automated Deployment**
+### 1. Clone Repo
+```bash
+git clone https://github.com/Naighu/freelance-app.git
+```
 
-## **Requirements**
+### 2. Backend Setup
+#### 2.1: Install dependencies
+```bash
+cd backend
+npm install
+```
 
-### **1. Choose a Real-World Application**
+#### 2.2. Create .env file inside backend
+```bash
+MONGO_URI=<MONGODB_URL>
+JWT_SECRET=<TOKEN>
+PORT=<PORT>
+ADMIN_TOKEN=<ADMIN TOKEN>
+```
 
-Select a meaningful use case for your CRUD operations. We will provide the list, you have to select it.
+#### 2.3. Run the backend
+```bash
+npm start
+```
 
-### **2. Project Management with JIRA and SysML**
+### 3. Frontend Setup
+   ```bash
+cd frontend
+```
+#### 3.1. Update base URL
+  - Update the base url of the backend app in the folder src/axiosConfig.jsx
+```bash
+import axios from 'axios';
 
-* Create a **JIRA project** and define:
-  * **Epic**
-  * **User Stories** (features required in your app)
-  * **Child issues & Subtasks** (breaking down development work)
-  * **Sprint Planning** (organizing work into milestones)
-* Document your JIRA **board URL** in the project README.
-* Draw a requirements diagram
+const axiosInstance = axios.create({
+  baseURL: '<here>',
+  headers: { 'Content-Type': 'application/json' },
+});
 
-### **3. Backend Development (Node.js + Express + MongoDB)**
+export default axiosInstance;
+```
+#### 3.2. Install dependencies and run the app
+```bash
+npm install
+npm start
+```
 
-* Create a user-friendly interface to interact with your API (Some portion developed, follow task manager app)).
-* Implement **forms** for adding and updating records.
-* Display data using  **tables, cards, or lists (Follow how we showed data in task manager app)**
+### CI/CD pipeline details
+- Setup the github runner and environment variables.
+- install nginx ,nvm, node and pm2
+```bash
+sudo apt install nginx nvm
+nvm install 22
+npm install -g pm2
+```
+- Build the frontend using yarn
+```bash
+yarn run build
+```
+- Configure nginx server
+  - Copy the following to the /etc/nginx/sites-available/default file
+  - Make sure to change the host and port if needed.
+```bash
+server {
+	server_name _;
+	location / {
+		proxy_pass http://localhost:3000;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real_IP $remote_addr;
+		proxy_set_header X-Forwarded-for $proxy_add_x_forwarded_for;
 
-### **4. Frontend Development (React.js)**
-
-* Create a user-friendly interface to interact with your API (**Some portion developed, follow task manager app)**.
-* Implement **forms** for adding, showing, deleting and updating records (CRUD).
-* Display data using  **tables, cards, or lists (Follow how we showed data in task manager app)**
-
-### **5. Authentication & Authorization**
-
-* Ensure **only authenticated users** can access and perform CRUD operations. (Already developed in your project)
-* Use **JWT (JSON Web Tokens)** for user authentication (Use the task manager one from .env file).
-
-### **6. GitHub Version Control & Branching Strategy**
-
-* Use **GitHub for version control** and maintain:
-  * `main` branch (stable production-ready code)
-  * Feature branches (`feature/xyz`) for each new functionality
-* Follow proper **commit messages** and  **pull request (PR) reviews** .
-
-### **7. CI/CD Pipeline Setup**
-
-* Implement a **CI/CD pipeline using GitHub Actions** to:
-  * Automatically **run tests** on every commit/pull request (Optional).
-  * Deploy the **backend** to **AWS** .
-  * Deploy the **frontend** to **AWS**.
-* Document your  **CI/CD workflow in the README** .
-
-## **Submission Requirements**
-
-* **JIRA Project Board URL** (user stories ).
-* **Requirment diagram** (Using project features)
-* **GitHub Repository** (`backend/` and `frontend/`).
-* **README.md** with:
-
-  * Project setup instructions.
-  * CI/CD pipeline details.
+	}
+}
+```
+- Start the pm2 instances
+  ```bash
+  cd backend
+  pm2 start 'npm start' --name 'backend'
+  cd ..
+  pm2 serve build/ 3000 --name "frontend" --spa
+    ```
