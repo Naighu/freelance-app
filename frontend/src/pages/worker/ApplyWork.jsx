@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { useParams } from 'react-router-dom'; 
+import { useParams, useNavigate } from 'react-router-dom'; 
 import { FaDollarSign } from 'react-icons/fa';
 import axiosInstance from '../../axiosConfig';
 import { useAuth } from '../../context/AuthContext';
@@ -7,16 +7,18 @@ import { useAuth } from '../../context/AuthContext';
 
 const ApplyWorkPage = () => {
     
+    const navigate = useNavigate();
     const { jobId } = useParams();
     console.log(useParams());
     
      const { user } = useAuth();
      const [work, setWork] = useState(null);
-    const [applicationAmount, setApplicationAmount] = useState(0);
+    const [applicationAmount, setApplicationAmount] = useState(null);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
 
-    const [error, setError] = useState('');
+    const [formError, setFormError] = useState(null);
+    const [formSuccess, setFormSuccess] = useState(null);
 
 
     useEffect(() => {
@@ -29,7 +31,7 @@ const ApplyWorkPage = () => {
                 
                 setWork(response.data);
             } catch (err) {
-                setError(err.response?.data?.message || 'Failed to fetch job details');
+                setFormError(err.response?.data?.message || 'Failed to fetch job details');
             } finally {
                 setLoading(false);
             }
@@ -60,26 +62,31 @@ const ApplyWorkPage = () => {
 
         try {
             setLoading(true);
-            setError('');
+            setFormError(null);
+            setFormSuccess(null);
 
-            // Prepare the application data
             const applicationData = {
                 work_id: work._id,
                 amount: applicationAmount,
                 message: message
             };
 
-            // Make API request to backend to apply for the job
-            await axiosInstance.post('/api/work/apply', applicationData, {
+            let response = await axiosInstance.post('/api/work/apply', applicationData, {
                 headers: {
                     Authorization: `Bearer ${user.token}`  // Replace with actual token handling
                 }
             });
 
-            alert('Application submitted successfully!');
-            // Optionally, handle further success logic here (e.g., clear form, navigate)
+            if (response.status >= 200 && response.status < 300) {
+                setFormSuccess("Application submitted successfully!");
+                window.setTimeout(() => {
+                    navigate(-1); // Go back to the previous page
+                  }, 1000);
+            }else{
+                setFormError(response.data.message || 'Failed to submit application. Please try again later.');
+            }
         } catch (err) {
-            setError('Failed to submit application. Please try again later.');
+            setFormError(err.response.data.message || 'Failed to submit application. Please try again later.');
             console.error(err);
         } finally {
             setLoading(false);
@@ -106,15 +113,18 @@ const ApplyWorkPage = () => {
     
                 {/* Apply Section */}
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <h3 className="text-lg font-semibold mb-4">Apply</h3>
+                    <h3 className="text-lg font-semibold mb-4">Send Offer</h3>
+                    {(formError && formError !== '') && <div className='alert alert-danger'>{formError}</div>}
+                    {(formSuccess && formSuccess !== '') && <div className='alert alert-success'>{formSuccess}</div>}
                     <div className="flex flex-col space-y-4">
-                        <label className="text-sm font-medium">Enter your amount to apply:</label>
+                        <label className="text-sm font-medium">Enter your offer amount:</label>
                         <div className="flex items-center space-x-2">
                             <FaDollarSign className="text-gray-500" />
                             <input
                                 type="number"
                                 value={applicationAmount}
-                                onChange={(e) => setApplicationAmount(parseFloat(e.target.value) || 0)}
+                                onChange={(e) => setApplicationAmount(parseFloat(e.target.value))}
+                                required
                                 placeholder="Enter amount"
                                 className="border border-gray-300 rounded-md p-2 w-full"
                             />
@@ -126,12 +136,14 @@ const ApplyWorkPage = () => {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Short message to the client"
+                            required
+                            minLength={1}
                             rows="4"
                             className="border border-gray-300 rounded-md p-2 w-full"
                         />
     
-                        {/* Error Message */}
-                        {error && <p className="text-red-600 text-sm">{error}</p>}
+                        {/* formError Message */}
+                        {/* {formError && <p className="text-red-600 text-sm">{formError}</p>} */}
     
                         <button
                             onClick={handleApply}
