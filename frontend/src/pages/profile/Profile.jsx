@@ -3,12 +3,15 @@ import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../axiosConfig';
 
 const ProfilePage = () => {
-       const { user:loggedUser } = useAuth();
+       const { user:loggedUser, login } = useAuth();
   
   const [user, setUser] = useState(loggedUser);
 const [loading,setLoading] = useState(false)
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState(user);
+
+  const [formError, setFormError] = useState(null);
+  const [formSuccess, setFormSuccess] = useState(null);
 
   const handleChange = (e) => {
     setEditedUser({ ...editedUser, [e.target.name]: e.target.value });
@@ -18,6 +21,8 @@ const [loading,setLoading] = useState(false)
     e.preventDefault()
     try {
       setLoading(true);
+      setFormError(null);
+      setFormSuccess(null);
 
       const body = {
         name: editedUser.name,
@@ -25,24 +30,27 @@ const [loading,setLoading] = useState(false)
       }
 
       // Make API request to backend to apply for the job
-      await axiosInstance.put('/api/auth/profile', body, {
+      let response = await axiosInstance.put('/api/auth/profile', body, {
           headers: {
               Authorization: `Bearer ${user.token}`  // Replace with actual token handling
           }
       });
 
-      alert('Profile Updated');
-      editedUser.password =''
-    setUser(editedUser);
+    setFormSuccess("Profile Updated");
+    login(response.data);
+    setUser(response.data);
 
       // Optionally, handle further success logic here (e.g., clear form, navigate)
   } catch (err) {
-      alert('Failed to update profile. Please try again later.');
+      setFormError(err.response.data.message || 'Failed to update profile. Please try again later.');
       console.error(err);
   } finally {
       setLoading(false);
   }
-    setIsEditing(false);
+
+    window.setTimeout(() => {
+      setIsEditing(false);
+    }, 1000);
   };
 
   return (
@@ -52,6 +60,8 @@ const [loading,setLoading] = useState(false)
           <form className="space-y-4" onSubmit={
             handleSave
           }>
+            {(formError && formError !== '') && <div className='alert alert-danger'>{formError}</div>}
+            {(formSuccess && formSuccess !== '') && <div className='alert alert-success'>{formSuccess}</div>}
             <div>
               <label className="block text-sm font-medium text-gray-700">Name</label>
               <input
@@ -99,7 +109,7 @@ const [loading,setLoading] = useState(false)
           <div className="text-center">
             <h2 className="text-xl font-bold text-gray-900">{user.name}</h2>
             <p className="text-gray-600">{user.email}</p>
-            <p className="text-gray-500">{user.user_type}</p>
+            <p className="text-gray-500 badge">{user.user_type.replace(/\b\w/g, (char) => char.toUpperCase())} {user.user_type === "client" ? "💼" : "👨🏻‍💻"}</p>
             <button
               className="mt-4 w-full bg-gray-800 text-white py-2 rounded-md hover:bg-gray-900"
               onClick={() => setIsEditing(true)}

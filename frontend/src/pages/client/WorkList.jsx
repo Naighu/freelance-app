@@ -11,6 +11,7 @@ const WorkList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [editingJob, setEditingJob] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(() => {
         const fetchJobs = async () => {
 
@@ -43,7 +44,7 @@ const WorkList = () => {
         }
         if (!user) {
             fetchAllWorks()
-        } else {
+        }else{
             fetchJobs();
         }
     }, [user]);
@@ -66,6 +67,7 @@ const WorkList = () => {
 
     const handleEdit = (job) => {
         setEditingJob(job)
+        setIsModalOpen(true)
     };
 
     console.log(user);
@@ -86,26 +88,76 @@ const WorkList = () => {
         }
     };
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4 text-center">Posted Work</h1>
-            {editingJob && (
+        <div className='pt-4'>
+            <h1 className="text-2xl font-bold mb-4 text-center">{ (user && user.user_type === "client") ? "Posted Works" : "Available Works"}</h1>
+            {/* {editingJob && (
                 <PostWorkForm
                     editingJob={editingJob}
                     setEditingJob={setEditingJob}
                     jobs={jobs}
                     setJobs={setJobs}
                 />
+            )} */}
+            {/* Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+                onClick={() => setIsModalOpen(false)} // Close when clicking outside
+                >
+                <div className="bg-white p-6 rounded shadow-lg w-96 relative"
+                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+                >
+                    {/* Close Button */}
+                    <button
+                    className="absolute top-2 right-2"
+                    onClick={() => setIsModalOpen(false)}
+                    >
+                    ✕
+                    </button>
+
+                    {/* Job Form */}
+                    <PostWorkForm
+                    editingJob={editingJob}
+                    setEditingJob={setEditingJob}
+                    setIsModalOpen={setIsModalOpen}  // Pass modal control function
+                    jobs={jobs}
+                    setJobs={setJobs}
+                    />
+                </div>
+                </div>
             )}
             <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {jobs.length > 0 ? (
                     jobs.map((job) => (
                         <Link
-                            to={!user ? '/login' : user.user_type === 'client' ? `/work/view-applied/${job._id}` : `/work/apply/${job._id}`}
-                            key={job._id}
-                            className="bg-white rounded-md shadow-md flex flex-col justify-between relative"
-                        >
-                            <div key={job._id} className="bg-white p-4 rounded-md shadow-md flex flex-col justify-between relative">
-
+                        to={ !user? '/login':  user.user_type ==='client'? `/work/view-applied/${job._id}` : `/work/apply/${job._id}`} 
+                        key={job._id}
+                        className="bg-white rounded-md shadow-md flex flex-col justify-between"
+                    >
+                        <div key={job._id} className="bg-white p-4 rounded-md shadow-md flex flex-col justify-between">
+                           
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-lg font-bold">{job.title}</h2>
+                                {(user && user.user_type === "client") && (
+                                    <div className="flex space-x-2">
+                                        <FaEdit
+                                            className="text-blue-500 cursor-pointer hover:text-blue-700"
+                                            onClick={(e) => {
+                                                e.preventDefault(); // Prevent Link navigation
+                                                e.stopPropagation(); // Stop event bubbling
+                                                handleEdit(job)
+                                            }}
+                                        />
+                                        <FaTrash
+                                            className="text-red-500 cursor-pointer hover:text-red-700"
+                                            onClick={(e) => {
+                                                e.preventDefault(); // Prevent Link navigation
+                                                e.stopPropagation(); // Stop event bubbling
+                                                handleDelete(job._id)
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                            </div>
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-lg font-bold">{job.title}</h2>
                                     {user && (
@@ -123,8 +175,8 @@ const WorkList = () => {
                                 </div>
 
                                 <p className="text-sm text-gray-500">{job.description}</p>
-                                <p className="text-sm text-gray-500">Budget: ${job.budget}</p>
-                                <p className="text-sm text-gray-500">Category: {job.category}</p>
+                                <p className="text-sm text-gray-500">Budget: ${job.budget}/- 💸</p>
+                                <p className="text-sm text-gray-500 mt-2"><span className='badge'>{job.category}</span></p>
 
                                 {job.applied && (
                                     <p className="text-sm text-gray-500">Applied: {job.applied.length}</p>
@@ -144,6 +196,14 @@ const WorkList = () => {
                     <p className="text-center text-gray-600">No jobs available.</p>
                 )}
             </div>
+            { (user && user.user_type === "client") &&
+            <div className='text-center w-100'>
+            <button onClick={() => {
+                setEditingJob(null)
+                setIsModalOpen(true)
+                }}>Post New Job</button>
+            </div>
+            }
         </div>
     );
 };

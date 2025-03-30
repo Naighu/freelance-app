@@ -37,16 +37,18 @@ const ViewAppliedUsers = () => {
 
   return (
     <div className="user-container">
-      <h1>Applied Users</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Applied Users</h1>
       <div className="user-cards">
-        {users.map((appliedUser) => (
+        {users.length > 0 ? ( users.map((appliedUser) => (
           <div key={appliedUser.user_id._id} className="user-card">
-            <h3>{appliedUser.user_id.name}</h3>
-            <p><strong>Budget:</strong> {appliedUser.amount}</p>
+            <p><strong>Offer From:</strong> {appliedUser.user_id.name} 👨🏻‍💻</p>
+            <p><strong>Budget:</strong> ${appliedUser.amount}/- 💸</p>
             <p><strong>Message:</strong> {appliedUser.message}</p>
-            <button onClick={() => handleContact(appliedUser.user_id.name)}>Contact</button>
+            <button className='mt-2' onClick={() => handleContact(appliedUser.user_id.name)}>Contact 📞</button>
           </div>
-        ))}
+        ))) : (
+          <p className="text-center text-gray-600">No applicants yet.</p>
+        )}
       </div>
     </div>
   );
