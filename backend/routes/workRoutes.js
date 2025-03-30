@@ -7,7 +7,6 @@ const router = express.Router();
 router.post('/post',validateWorkMiddleware,protect, postWork);
 router.post('/category/add',validateAddCategoryiddleware, protectAdmin,addCategory);
 router.get('/category',getCategories);
-router.get('/get',protect,fetchAllWorkProtected);
 router.get('/get/all',fetchAllWork);
 
 router.get('/get/:id',protect,fetchWorkById);
