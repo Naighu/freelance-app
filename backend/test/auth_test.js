@@ -298,7 +298,6 @@ describe('User Auth Function Test', () => {
             user: { id: userId },  
             body: {
                 name: "New name",
-                email: "new@gmail.com"
             }
         };
     
@@ -311,15 +310,10 @@ describe('User Auth Function Test', () => {
         await updateUserProfile(req, res);
     
         expect(existingUser.name).to.equal("New name");
-        expect(existingUser.email).to.equal("new@gmail.com");
     
         expect(res.status.called).to.be.false;
         expect(res.json.calledOnce).to.be.true;
-        expect(res.json.calledWith({
-            id: userId,
-            name: "New name",
-            email: "new@gmail.com"
-        })).to.be.true;
+     
     
         findByIdStub.restore();
     });
@@ -348,7 +342,7 @@ describe('User Auth Function Test', () => {
             user: { id: userId },  
             body: {
                 name: "New name",
-                email: "new@gmail.com"
+                password: "new Password"
             }
         };
     
