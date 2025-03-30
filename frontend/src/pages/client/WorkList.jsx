@@ -16,7 +16,7 @@ const WorkList = () => {
         const fetchJobs = async () => {
             try {
                 const response = await axiosInstance.get('/api/work/get/all', {
-                    headers: { Authorization: `Bearer ${user.token}` },
+                    headers: user? { Authorization: `Bearer ${user.token}` }:{},
                 });
                 console.log(response.data);
                 setJobs(response.data);
@@ -28,23 +28,7 @@ const WorkList = () => {
             }
         };
 
-        //This function gets all the works without having the JWT token
-        const fetchAllWorks = async () => {
-            try {
-                const response = await axiosInstance.get('/api/work/get/all');
-                setJobs(response.data);
-            } catch (err) {
-                console.log(err);
-                setError(err.response?.data?.message || 'Failed to fetch jobs');
-            } finally {
-                setLoading(false);
-            }
-        }
-        if (!user) {
-            fetchAllWorks()
-        }else{
-            fetchJobs();
-        }
+        fetchJobs()
     }, [user]);
 
     if (loading) {
