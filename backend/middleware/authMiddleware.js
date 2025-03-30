@@ -1,4 +1,5 @@
-
+const Ajv = require("ajv");
+const ajv = new Ajv({ allErrors: true });
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
