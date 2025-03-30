@@ -41,7 +41,7 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob, setIsModalOpen
     };
 
     fetchCategories();
-  }, []);
+  }, [editingJob]);
 
   // Handle editing case
   useEffect(() => {
