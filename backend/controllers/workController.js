@@ -100,8 +100,7 @@ const deleteWork = async (req, res) => {
     return res.status(200).json({message: 'Deleted'})
 }
 
-//This function retuns all the works posted by the client,if the user type is client
-//Otherwise return all the works.
+//returns all the works if the user_type is a worker. Otherwise return only the work posted by the client
 const fetchAllWork = async (req, res) => {
     try {
         
