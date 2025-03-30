@@ -138,7 +138,7 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob, setIsModalOpen
         setFormError(null)
         setFormSuccess("Success")
       } else {
-        setFormError(`Unexpected response: ${response.status, response.data.message}`)
+        setFormError(`Unexpected response: ${response.status} ${response.data.message}`)
         setFormSuccess(null)
       }
     } catch (error) {
