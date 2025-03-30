@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosConfig';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate, useLocation } from "react-router-dom";
 
 const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob, setIsModalOpen }) => {
    const { user } = useAuth();
@@ -60,13 +61,13 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob, setIsModalOpen
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editingJob) {
-     await editJob(formData,setJobs)
+     await editJob(formData)
     } else {
-      await postJob(formData, setJobs);
+      await postJob(formData);
     }
   };
 
-  const postJob = async (formValues, setJobs) => {
+  const postJob = async (formValues) => {
     try {
       const body = {
         title: formValues.title,
