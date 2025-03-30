@@ -6,7 +6,7 @@ const ProfilePage = () => {
        const { user:loggedUser, login } = useAuth();
   
   const [user, setUser] = useState(loggedUser);
-const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(false)
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState(user);
 
