@@ -14,10 +14,8 @@ const WorkList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(() => {
         const fetchJobs = async () => {
-
-
             try {
-                const response = await axiosInstance.get('/api/work/get', {
+                const response = await axiosInstance.get('/api/work/get/all', {
                     headers: { Authorization: `Bearer ${user.token}` },
                 });
                 console.log(response.data);
@@ -90,14 +88,7 @@ const WorkList = () => {
     return (
         <div className='pt-4'>
             <h1 className="text-2xl font-bold mb-4 text-center">{ (user && user.user_type === "client") ? "Posted Works" : "Available Works"}</h1>
-            {/* {editingJob && (
-                <PostWorkForm
-                    editingJob={editingJob}
-                    setEditingJob={setEditingJob}
-                    jobs={jobs}
-                    setJobs={setJobs}
-                />
-            )} */}
+            
             {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
@@ -160,7 +151,7 @@ const WorkList = () => {
                             </div>
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-lg font-bold">{job.title}</h2>
-                                    {user && (
+                                    {user && user.user_type === job.user_id && (
                                         <div className="flex space-x-2">
                                             <FaEdit
                                                 className="text-blue-500 cursor-pointer hover:text-blue-700"

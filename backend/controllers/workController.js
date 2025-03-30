@@ -104,7 +104,7 @@ const deleteWork = async (req, res) => {
 //Otherwise return all the works.
 const fetchAllWork = async (req, res) => {
     try {
-        if (req.user.user_type === 'client') {
+        if (req.user && req.user.user_type === 'client') {
             const myWorks = await Work.find({ user_id: req.user.id })
 
             return res.status(200).json(myWorks)
@@ -132,6 +132,7 @@ const fetchWorkById = async (req, res) => {
 
 const applyWork = async (req, res) => { 
     try {
+        
         if (req.user.user_type === 'client') {
             
 
@@ -151,6 +152,7 @@ const applyWork = async (req, res) => {
         //Check if the worker already applied
         const existingApplication = work.applied_users.find(application => application.user_id.equals(req.user._id.toString()));
         if (existingApplication) {
+
             return res.status(400).json({ message: "You have already applied for this job" });
         }
 
