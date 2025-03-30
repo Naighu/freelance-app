@@ -60,7 +60,7 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob, setIsModalOpen
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editingJob) {
-     await editJob(formData)
+     await editJob(formData,setJobs)
     } else {
       await postJob(formData);
     }
@@ -120,7 +120,6 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob, setIsModalOpen
       const response = await axiosInstance.put('/api/work/update', body, {
         headers: {
           Authorization: `Bearer ${user.token}`,
-          "Content-Type": "application/json",
         },
       });
 
@@ -139,13 +138,13 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob, setIsModalOpen
         setFormError(null)
         setFormSuccess("Success")
       } else {
-        setFormError("Unexpected response:", response.status, response.data)
+        setFormError(`Unexpected response: ${response.status, response.data.message}`)
         setFormSuccess(null)
       }
     } catch (error) {
-      setFormError('Error updating job:', error.response?.data || error.message)
+      setFormError(`Error updating job: ${error.response?.data.message || error.message}`)
       setFormSuccess(null)
-      console.error('Error updating job:', error.response?.data || error.message);
+      console.error('Error updating job:', error.response?.data.message || error.message);
     }
   };
 

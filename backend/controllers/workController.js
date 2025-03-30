@@ -53,7 +53,7 @@ const editWork = async (req, res) => {
         }
 
         
-        
+    
 
         // Check if the logged-in user is the owner of the work
         if (!work.user_id.equals(req.user._id)) {
@@ -104,6 +104,7 @@ const deleteWork = async (req, res) => {
 //Otherwise return all the works.
 const fetchAllWork = async (req, res) => {
     try {
+        
         if (req.user && req.user.user_type === 'client') {
             const myWorks = await Work.find({ user_id: req.user.id })
 

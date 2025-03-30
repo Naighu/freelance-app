@@ -68,7 +68,6 @@ const WorkList = () => {
         setIsModalOpen(true)
     };
 
-    console.log(user);
 
 
     const handleDelete = async (jobId) => {
