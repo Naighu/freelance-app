@@ -1,10 +1,5 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const http = require('http');
-const app = require('../server');
-const connectDB = require('../config/db');
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 const sinon = require('sinon');
 

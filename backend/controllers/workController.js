@@ -144,7 +144,7 @@ const applyWork = async (req, res) => {
 
          // Find the job the worker wants to apply for
          const work = await Work.findById(work_id);
-         if (!work) {
+         if (!work) {            
              return res.status(404).json({ message: "Job not found" });
          }
 
@@ -153,7 +153,6 @@ const applyWork = async (req, res) => {
         //Check if the worker already applied
         const existingApplication = work.applied_users.find(application => application.user_id.equals(req.user._id.toString()));
         if (existingApplication) {
-
             return res.status(400).json({ message: "You have already applied for this job" });
         }
 
@@ -168,8 +167,11 @@ const applyWork = async (req, res) => {
 
         // Save the updated work document
         await work.save();
+
         res.status(200).json(work);
     } catch (error) {
+        
+
         res.status(500).json({ message: error.message });
     }
 }
