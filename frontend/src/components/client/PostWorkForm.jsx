@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosConfig';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate, useLocation } from "react-router-dom";
 
-const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
+const PostWorkForm = ({editingJob }) => {
+  const navigate = useNavigate();
+      const location = useLocation();
    const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
@@ -45,27 +48,31 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editingJob) {
-     await editJob(formData,setJobs)
+     await editJob(formData)
     } else {
-      await postJob(formData, setJobs);
+      await postJob(formData);
     }
   };
 
-  const postJob = async (formValues, setJobs) => {
+  const postJob = async (formValues) => {
     try {
       const body = {
         title: formValues.title,
         description: formValues.description,
         budget: formValues.budget,
-        category_id: formValues.category._id
+        category_id: formValues.category
       }
-      const response = await axiosInstance.post('/api/work/post', {
-        headers: { Authorization: `Bearer ${user.token}` },
-        data: body
+ 
+      
+      
+       await axiosInstance.post('/api/work/post',body, {
+        headers: { Authorization: `Bearer ${user.token}` }
       });
-      setJobs((prevJobs) => [...prevJobs, response.data]);
+
+      
+      navigate(location.state?.from || -1);
     } catch (error) {
-      console.error('Error posting job:', error.response?.data || error.message);
+      console.error('Error posting job:', error.toString());
     }
   };
 
@@ -78,18 +85,15 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
         title: formValues.title,
         description: formValues.description,
         budget: formValues.budget,
-        category_id: formValues.category._id
+        category_id: formValues.category
       }
-      const response = await axiosInstance.put('/api/work/update',body, {
+    await axiosInstance.put('/api/work/update',body, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
 
 
-     setJobs((prevJobs) => 
-      prevJobs.map((job) => 
-        job._id === response.data._id ? response.data : job
-      )
-    );
+    
+
     } catch (error) {
       console.error('Error posting job:', error.response?.data || error.message);
     }
@@ -111,6 +115,7 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
       <textarea
         placeholder="Description"
         required
+        minLength={10}
         value={formData.description}
         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
         className="w-full mb-4 p-2 border rounded"
@@ -121,7 +126,7 @@ const PostWorkForm = ({ jobs, setJobs, editingJob, setEditingJob }) => {
         placeholder="Budget"
         required
         value={formData.budget}
-        onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+        onChange={(e) => setFormData({ ...formData, budget: parseFloat(e.target.value) || 0 })}
         className="w-full mb-4 p-2 border rounded"
       />
 
