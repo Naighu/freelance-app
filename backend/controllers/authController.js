@@ -31,7 +31,7 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({ email: email });
         
         if (user && (await bcrypt.compare(password, user.password))) {
-            res.status(200).json({ id: user.id, name: user.name, email: user.email, token: generateToken(user.id) });
+            res.status(200).json({ id: user.id, name: user.name, email: user.email,user_type: user.user_type, token: generateToken(user.id) });
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
         }
@@ -63,9 +63,13 @@ const updateUserProfile = async (req, res) => {
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const { name, email } = req.body;
+        const { name, password } = req.body;
         user.name = name || user.name;
-        user.email = email || user.email;
+        if(password){
+            const salt = await bcrypt.genSalt(10);
+            const saltedPassword = await bcrypt.hash(password, salt);
+             user.password =saltedPassword;
+        }
 
         const updatedUser = await user.save();
         res.json({ id: updatedUser.id, name: updatedUser.name, email: updatedUser.email });
