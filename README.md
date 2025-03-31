@@ -7,7 +7,7 @@ A full-stack freelance platform built with React (frontend) and Node.js (backend
 
 ## Features
 - User authentication (workers & Clients)
-- Project posting and applying system
+- Work posting and applying system
 - Profile management
 
 ## Project Structure
@@ -96,6 +96,10 @@ server {
 	}
 }
 ```
+  - Restart nginx server
+  ```bash
+  sudo service nginx restart
+  ```
 - Start the pm2 instances
   ```bash
   cd backend
